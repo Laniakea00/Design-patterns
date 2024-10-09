@@ -1,2 +1,4 @@
-package Assignment3;public class TestClass {
+package Assignment3;
+
+public class TestClass {
 }
