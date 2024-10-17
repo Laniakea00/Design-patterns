@@ -5,6 +5,14 @@ import BehavioralPatterns.Command.*;
 import BehavioralPatterns.Iterator.*;
 import BehavioralPatterns.Mediator.*;
 import BehavioralPatterns.Memento.*;
+import BehavioralPatterns.Observer.*;
+import BehavioralPatterns.State.*;
+import BehavioralPatterns.Strategy.*;
+import BehavioralPatterns.TemplateMethod.*;
+import BehavioralPatterns.Visitor.*;
+
+
+
 
 public class Main {
     public static void main(String[] args){
@@ -144,5 +152,130 @@ public class Main {
         // Восстанавливаем предыдущее состояние текста
         editor.restore(caretaker.getMemento());
         System.out.println("Восстановленный текст: " + editor.getText());
+        System.out.println();
+        System.out.println();
+
+
+        // Observer
+        System.out.println("Observer: ");
+        System.out.println();
+
+        // Создаем издателя новостей
+        NewsPublisherImpl newsPublisher = new NewsPublisherImpl();
+
+        // Создаем подписчиков
+        Observer smartphoneUser = new NewsSubscriberSmartphone();
+        Observer laptopUser = new NewsSubscriberLaptop();
+        Observer tabletUser = new NewsSubscriberTablet();
+
+        // Добавляем подписчиков к издателю
+        newsPublisher.subscribe(smartphoneUser);
+        newsPublisher.subscribe(laptopUser);
+        newsPublisher.subscribe(tabletUser);
+
+        // Публикуем несколько новостей
+        newsPublisher.publishNews("Спорт", "Футбольный матч завершился со счетом 2:1.");
+        System.out.println();
+        newsPublisher.publishNews("Наука", "Учёные открыли новую планету.");
+        System.out.println();
+        newsPublisher.publishNews("Технологии", "Новый смартфон представлен на выставке.");
+        System.out.println();
+        System.out.println();
+
+
+        // State
+        System.out.println("State: ");
+        System.out.println();
+
+        // Создаем плеер
+        Player player = new Player();
+
+        // Проверяем работу плеера в различных состояниях
+        player.play();   // Воспроизведение с начала
+        player.pause();  // Пауза
+        player.play();   // Возобновление воспроизведения
+        player.stop();   // Остановка
+        player.pause();  // Попытка поставить на паузу в состоянии остановки
+        player.play();   // Запуск с начала после остановки
+        System.out.println();
+        System.out.println();
+
+
+        // Strategy
+        System.out.println("Strategy: ");
+        System.out.println();
+
+        // Создаем заказ с начальной стоимостью
+        double orderPrice = 1000.0;
+        Order order = new Order();
+
+        // Создаем разные стратегии оплаты
+        PaymentStrategy cardPayment = new CardPaymentStrategy();
+        PaymentStrategy walletPayment = new WalletPaymentStrategy();
+        PaymentStrategy cashOnDelivery = new CashOnDeliveryStrategy();
+
+        // Применяем стратегию оплаты картой
+        order.setStrategy(cardPayment);
+        System.out.println("Итоговая стоимость заказа (карта): " + order.finalPrice(orderPrice) + " тенге");
+        System.out.println();
+
+        // Применяем стратегию оплаты электронным кошельком
+        order.setStrategy(walletPayment);
+        System.out.println("Итоговая стоимость заказа (кошелек): " + order.finalPrice(orderPrice) + " тенге");
+        System.out.println();
+
+        // Применяем стратегию наложенного платежа
+        order.setStrategy(cashOnDelivery);
+        System.out.println("Итоговая стоимость заказа (наложенный платеж): " + order.finalPrice(orderPrice) + " тенге");
+        System.out.println();
+        System.out.println();
+
+
+        // TemplateMethod
+        System.out.println("Template Method: ");
+        System.out.println();
+
+        // Создаем проверки для продуктов питания и электроники
+        QualityCheck foodCheck = new FoodQualityCheck();
+        QualityCheck electronicsCheck = new ElectronicsQualityCheck();
+
+        // Запускаем процесс проверки для продуктов питания
+        System.out.println("Запуск проверки продуктов питания:");
+        foodCheck.checkProduct();
+        System.out.println();
+
+        // Запускаем процесс проверки для электронной продукции
+        System.out.println("Запуск проверки электронной продукции:");
+        electronicsCheck.checkProduct();
+        System.out.println();
+        System.out.println();
+
+
+        // Visitor
+        // Создаем несколько файлов
+        File textFile = new TextFile("This is a clean text file.");
+        File infectedTextFile = new TextFile("This text contains a virus.");
+        File executableFile = new ExecutableFile("binary_code_with_malware");
+        File cleanExecutableFile = new ExecutableFile("clean_binary_code");
+
+        // Создаем посетителей
+        Visitor antivirusVisitor = new AntivirusVisitor();
+        Visitor reportVisitor = new ReportVisitor();
+
+        // Проверка файлов антивирусом
+        System.out.println("Запуск проверки антивирусом:");
+        textFile.accept(antivirusVisitor);
+        infectedTextFile.accept(antivirusVisitor);
+        executableFile.accept(antivirusVisitor);
+        cleanExecutableFile.accept(antivirusVisitor);
+        System.out.println();
+
+        // Генерация отчёта
+        System.out.println("Генерация отчета о проверке:");
+        textFile.accept(reportVisitor);
+        infectedTextFile.accept(reportVisitor);
+        executableFile.accept(reportVisitor);
+        cleanExecutableFile.accept(reportVisitor);
+        System.out.println();
     }
 }
